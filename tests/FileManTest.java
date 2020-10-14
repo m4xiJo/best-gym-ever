@@ -2,20 +2,20 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FileManTest {
-    public FileMan fileManager = new FileMan("./files/customers.txt");
+    public FileMan inputFile = new FileMan("./files/customers.txt");
+    public FileMan outputFile = new FileMan("./files/output.txt");
 
     @Test
     public final void searchFileTest() {
-        assertNotNull(fileManager.searchFile("Fritjoff Flacon"));
-        assertNotNull(fileManager.searchFile("7605021234"));
-        assertNotNull(fileManager.searchFile("2010-04-07"));
+        assertNotNull(inputFile.searchFile("Fritjoff Flacon"));
+        assertNotNull(inputFile.searchFile("7605021234"));
+        assertNotNull(inputFile.searchFile("2010-04-07"));
     }
 
     @Test
     public final void writeToFileTest() {
-        //assertTrue(fileManager.writeToFile("Fritjoff Flacon"));
-        //assertTrue(fileManager.writeToFile("Fritjoff Flacon"));
-        //assertTrue(fileManager.writeToFile("Fritjoff Flacon"));
+        //outputFile.writeToFile("Fritjoff Flacon");
+        //assertEquals("Result", m1 * m2, outputFile.writeToFile("Testo"));
     }
 
 }

@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -7,20 +9,29 @@ import java.util.regex.Pattern;
 public class FileMan {
     protected File textFile;
     protected Scanner scanFile;
+    protected FileWriter writeFile;
     protected StringBuilder textBuffer;
 
     FileMan(String path) {
         try {
             this.textFile = new File(path);
             this.scanFile = new Scanner(textFile);
+            this.writeFile = new FileWriter(textFile);
             this.textBuffer = new StringBuilder();
         } catch(Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
 
-    void writeToFile() {
-
+    void writeToFile(String toWrite) {
+        try {
+            if (this.textFile.createNewFile()) System.out.println("File created: " + this.textFile.getName());
+            else System.out.println("File already exists.");
+            this.writeFile.write(toWrite);
+            this.writeFile.close();
+        } catch(IOException e) {
+            System.out.println("Error:" + e.getMessage());
+        }
     }
 
     String searchFile(String toFind) {
@@ -32,6 +43,7 @@ public class FileMan {
                 String textLine = this.scanFile.nextLine();
                 this.textBuffer.append(textLine + "\n");
             }
+            this.scanFile.close();
 
             String group1 = "(" + toFind + ".*)";
             String group2 = "([^\\n]+" + toFind + ")";
