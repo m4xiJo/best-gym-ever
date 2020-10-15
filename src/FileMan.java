@@ -1,68 +1,43 @@
-import javax.swing.*;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.Period;
 
 public class FileMan {
-    protected File textFile;
-    protected Scanner scanFile;
-    protected FileWriter writeFile;
-    protected StringBuilder textBuffer;
 
-    FileMan(String path) {
-        try {
-            this.textFile = new File(path);
-            this.scanFile = new Scanner(textFile);
-            this.writeFile = new FileWriter(textFile);
-            this.textBuffer = new StringBuilder();
+    FileMan() {
+
+    }
+
+    void writeToFile(String path, String toWrite) {
+        Path file = Paths.get(path);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(path, true))) {
+            writer.write(toWrite);
         } catch(Exception e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
+            System.out.println("Error: " + e.getMessage());
         }
     }
 
-    void writeToFile(String toWrite) {
-        try {
-            if (this.textFile.createNewFile()) System.out.println("File created: " + this.textFile.getName());
-            else System.out.println("File already exists.");
-            this.writeFile.write(toWrite);
-            this.writeFile.close();
-        } catch(IOException e) {
-            System.out.println("Error:" + e.getMessage());
-        }
-    }
-
-    String searchFile(String toFind) {
-        this.textBuffer.setLength(0);
-        String result = "";
-
-        try {
-            while (this.scanFile.hasNextLine()) {
-                String textLine = this.scanFile.nextLine();
-                this.textBuffer.append(textLine + "\n");
+    Object[] readFromFile(String path, String toFind) {
+        Object[] data = new Object[3];
+        String line;
+        Path file = Paths.get(path);
+        try (BufferedReader reader = Files.newBufferedReader(file)) {
+            while ((line = reader.readLine()) != null) {
+                if (line.toLowerCase().contains(toFind.toLowerCase())) {
+                    data[0] = line;
+                    data[1] = LocalDate.parse(reader.readLine());
+                    data[2] = Period.between((LocalDate) data[1], LocalDate.now()).getYears();
+                }
             }
-            this.scanFile.close();
-
-            String group1 = "(" + toFind + ".*)";
-            String group2 = "([^\\n]+" + toFind + ")";
-            String group3 = "(.*\\n" + toFind + ")";
-            String regex = group1;
-            Pattern pattern = Pattern.compile(regex, Pattern.DOTALL);
-            Matcher matcher = pattern.matcher(this.textBuffer);
-
-            if (matcher.find()) {
-                System.out.println("Found value:\n" + matcher.group(0));
-                System.out.println("Found value: " + matcher.group(1));
-                System.out.println("Found value: " + matcher.group(2));
-            } else {
-                System.out.println("NO MATCH");
-            }
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
         }
-        return "null";
+        catch (Exception e){
+            System.out.println("Error: " + e.getMessage());
+        }
+        return data;
     }
+
+
 }
