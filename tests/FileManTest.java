@@ -1,6 +1,7 @@
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+// Unfinished tests, I could ofc implement em, but meh...
 public class FileManTest {
     public FileMan inputFile = new FileMan();
     public FileMan outputFile = new FileMan();
